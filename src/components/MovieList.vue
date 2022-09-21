@@ -14,7 +14,9 @@
 
 <script>
   // router 를 이용한 페이지 이동
-  import {useRouter} from 'vue-router';
+  import {
+    useRouter
+  } from 'vue-router';
 
   export default {
     props: ['propsdata'],
@@ -37,16 +39,18 @@
     position: relative;
     display: block;
   }
+
   .movie-box a {
     position: relative;
     display: block;
   }
+
   .a-img {
     position: relative;
     display: block;
     height: 400px;
-    overflow: hidden;  
-    border-radius: 10px;  
+    overflow: hidden;
+    border-radius: 10px;
   }
 
   .a-img img {
@@ -54,7 +58,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    height:100%;
+    height: 100%;
   }
 
   .a-title {
@@ -63,6 +67,7 @@
     margin: 20px 0;
     font-size: 18px;
   }
+
   .a-title small {
     display: block;
     float: right;
@@ -71,16 +76,17 @@
     margin-top: 3px;
   }
 
- .a-desc {
+  .a-desc {
     position: relative;
     display: block;
     margin-bottom: 20px;
     font-size: 12px;
     line-height: 1.25;
     color: #333;
-    transition:all .5s;
- }
-  .a-desc:hover {
-    color:#fff;
+    transition: all .5s;
+  }
+
+  .movie-box:hover > a > .a-desc {
+    color: #fff;
   }
 </style>
