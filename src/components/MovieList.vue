@@ -1,8 +1,8 @@
 <template>
   <div class="movie-box">
-    <a v-on:click.stop="detailMove">
+    <a @click.stop="detailMove">
       <div class="a-img">
-        <img v-bind:src="propsdata.image" />
+        <img :src="propsdata.image" />
       </div>
       <h2 class="a-title">{{propsdata.title}} <small>{{propsdata.original_title}}</small></h2>
       <p class="a-desc">
@@ -44,7 +44,6 @@
   .a-img {
     position: relative;
     display: block;
-    width: 100%;
     height: 400px;
     overflow: hidden;  
     border-radius: 10px;  
@@ -55,7 +54,7 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
-    width: 100%;
+    height:100%;
   }
 
   .a-title {
@@ -79,5 +78,9 @@
     font-size: 12px;
     line-height: 1.25;
     color: #333;
+    transition:all .5s;
  }
+  .a-desc:hover {
+    color:#fff;
+  }
 </style>

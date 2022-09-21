@@ -1,171 +1,165 @@
 <template>
-  <div 
-    class="movie-box"
-    :style="{
-      backgroundImage: `url(${movieInfo.movie_banner})`,
-      backgroundSize: 'cover',
-      backgroundPosition: 'center'
-    }"
-  >
-    <a class="a-back" v-on:click.stop="back">all list</a>
-    
-    <div class="movie-detail">
-      <img class="movie-image" v-bind:src="movieInfo.image">
-
-      <div class="movie-info-wrap">
-        <h2 class="movie-title">{{movieInfo.title}} <small>{{movieInfo.original_title}}</small></h2>      
-        <p class="movie-info">
-          Release Date : {{movieInfo.release_date}} <br />
-          Director : {{movieInfo.director}} <br />
-          Producer : {{movieInfo.producer}} <br />
-          Running Time : {{movieInfo.running_time}} 분
-        </p>
-        <p class="movie-desc">        
-          {{movieInfo.description}}
-        </p>
-      </div>      
+  <Transition name="fade">
+  <div class="detail-intro" v-if="show"></div>
+  </Transition>
+    <div class="movie-box">
+      <a class="a-back" @click.stop="back">Home</a>
+      <div class="movie-detail">
+        <img class="movie-image" :src="movieInfo.image">
+        <div class="movie-info-wrap">
+          <h2 class="movie-title">{{movieInfo.title}}</h2>
+          <span>{{movieInfo.original_title}}</span>
+          <p class="movie-info">
+            {{movieInfo.release_date}}'s <br>
+            Director - {{movieInfo.director}} <br>
+            Producer - {{movieInfo.producer}} <br>
+            Running Time : {{movieInfo.running_time}} min
+          </p>
+          <p class="movie-desc">{{movieInfo.description}}</p>
+        </div>
+      </div>
     </div>
-
-  </div>
 </template>
 
 <script>
-import { computed } from 'vue';
-// router 를 통해서 전송받은 데이터 활용
-import {useRoute, useRouter } from 'vue-router'
-import { useStore } from 'vuex'
+import { computed, onMounted, onUpdated, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router'
+import { useStore } from 'vuex';
 export default {
-  setup() {
+  setup(props,context){
     const route = useRoute();
     const id = route.params.id;
-    // 상세정보 호출
+    
     const store = useStore();
     store.dispatch('fetchMovieInfo', id)
-    const movieInfo = computed( () => store.getters.getMovieInfo)
+    const movieInfo = computed( () => store.getters.getMovieInfo )
     
     const router = useRouter();
     const back = () => {
-      router.push('/page-ghibli/');
+      router.push('/page-ghibli/')
     }
-    return {      
+
+    const show = ref(true);
+    onMounted( () => {
+      window.scrollTo(0,0);
+      document.querySelector('html').style.overflowY = "hidden";
+    })
+
+    onUpdated( () => {
+      show.value = false;
+      document.querySelector('html').style.overflowY = "auto";
+      context.emit('hide');
+    })
+
+
+    return{
       id,
       movieInfo,
-      back
+      back,
+      show
     }
   }
 }
 </script>
 
 <style scoped>
-.movie-box {
+.movie-box{
   position: relative;
   display: block;
   width: 100%;
-  /* height: 100vh; */
+  height: 105vh;
 }
 
-.a-back {
-  position: relative;
+.a-back{
+  position: sticky;
+  right: 30px;
+  top: 20px;
   display: block;
   float: right;
-  margin-right: 20px;
-  margin-top: 10px;
-
-  padding: 5px;
-  background: skyblue;
-  text-transform: uppercase;
+  margin: 20px 30px; 
+  font-size: 19px;
   cursor: pointer;
-  border-radius: 5px;
-  font-size: 10px;
-
+  color: #999;
+  transition: color 0.3s;
+  z-index: 9999
+}
+.a-back:hover{
+  color: #fff;
 }
 
-.movie-detail {
+.movie-detail{
   position: relative;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-around;
+  flex-direction: column;
   align-items: center;
-
   width: 100%;
   height: 100%;
+
 }
-.movie-image {
+.movie-image{
   position: relative;
   display: block;
-  width: 45%;
+  width: 33%;
   height: auto;
   border-radius: 10px;
-  border: 10px solid #fff;
-   box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
-            0 8px 16px -8px rgba(0, 0, 0, 0.3), 0 -6px 16px -6px rgba(0, 0, 0, 0.025);
+  box-shadow: 10px 10px 10px #111;
+  
 }
 
-.movie-info-wrap {
-  position: relative;
-  display: block;
-  width: 45%;
+.movie-info-wrap{
+  width: 50%;
+  padding: 20px 0;
+}
+.movie-info{
+  margin: 20px 0;
+}
+.movie-desc{
+  color: #999;
 }
 
-.movie-title {
-  position: relative;
-  display: block;
+.detail-intro{
+  position: fixed;
+  left: 0;
+  top:0;
   width: 100%;
-  font-size: 20px;
-  background: #fff;
-  border-radius: 5px;
-  color: #000;
-  box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
-            0 8px 16px -8px rgba(0, 0, 0, 0.3), 0 -6px 16px -6px rgba(0, 0, 0, 0.025);
-  padding: 20px;
-  margin-bottom: 20px;
+  height: 100%;
+  background:#000 url('@/assets/intro.png') no-repeat center;
+  background-size: cover;
+  z-index: 99;
 }
 
-.movie-title small {
-  position: relative;
-  display: block;
-  float: right;
-  color: #333;
-  font-size: 12px;
-  margin-top: 5px;
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s ease;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
 }
 
 
-.movie-info {
-  position: relative;
-  display: block;
-  width: 100%;
-  font-size: 14px;
-  background: #fff;
-  border-radius: 5px;
-  color: #000;
-  box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
-            0 8px 16px -8px rgba(0, 0, 0, 0.3), 0 -6px 16px -6px rgba(0, 0, 0, 0.025);
-  padding: 20px;
-  margin-bottom: 20px;
-}
-.movie-desc {
-  position: relative;
-  display: block;
-  width: 100%;
-  font-size: 14px;
-  background: #fff;
-  border-radius: 5px;
-  color: #000;
-  box-shadow: 0 13px 27px -5px rgba(50, 50, 93, 0.25),
-            0 8px 16px -8px rgba(0, 0, 0, 0.3), 0 -6px 16px -6px rgba(0, 0, 0, 0.025);
-  padding: 20px;
-  margin-bottom: 20px;
-}
-
-@media screen and (max-width: 1000px) {
-  .movie-image {
-    width: 95%;
-    margin: 30px 0;
+@media screen and (max-width: 1140px){
+  .movie-image{
+    height: 50vh;
+    width: auto;
   }
-  .movie-info-wrap {
-    width: 95%;
-    margin: 20px auto;
+  .a-back{
+    font-size: 18px;
+  }
+}
+
+@media screen and (max-width: 770px){
+  .movie-image{
+    height: 50vh;
+    width: auto;
+  }
+
+  .movie-detail{
+    align-content: center;
+    align-items: flex-start;
   }
 }
 </style>
