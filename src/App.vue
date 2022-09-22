@@ -134,12 +134,11 @@ html{
   left: 50%;
   display: block;
   width: 100%;
-  height: 77px;
+  height: 150px;
   text-align: center;
   background-color: #222;
   transform: translateX(-50%);
   padding-top: 20px;
   z-index: 98;
 }
-
 </style>
